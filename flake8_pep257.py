@@ -6,6 +6,7 @@ https://pypi.python.org/pypi/flake8-pep257
 
 import codecs
 import gc
+import optparse
 import os
 
 import pep257
@@ -76,8 +77,15 @@ class Main(object):
 
         :param parser: optparse.OptionParser from pep8.
         """
-        parser.add_option('--show-pep257', action='store_true', help='show explanation of each PEP 257 error')
-        parser.config_options.append('show-pep257')
+        try:
+            # flake8 3.0.0 and later
+            parser.add_option('--show-pep257', action='store_true', parse_from_config=True,
+                              help='show explanation of each PEP 257 error')
+        except optparse.OptionError:
+            # flake8 < 3.0.0
+            parser.add_option('--show-pep257', action='store_true', help='show explanation of each PEP 257 error')
+            parser.config_options.append('show-pep257')
+
 
     @classmethod
     def parse_options(cls, options):
